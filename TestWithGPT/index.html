@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: radial-gradient(
+          circle,
+          rgba(2, 0, 36, 1) 0%,
+          rgba(5, 5, 33, 1) 30%,
+          rgba(4, 11, 43, 1) 61%,
+          rgba(1, 12, 15, 1) 100%
+        );
+
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      .container {
+        width: 400px;
+        padding: 20px;
+        max-height: calc(100% - 100px);
+        margin-top: 30px;
+        margin-bottom: 30px;
+        overflow: visible;
+        background-color: rgba(13, 19, 47, 0.8);
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        border: 1px solid rgb(54, 54, 54);
+      }
+
+      .startBtn {
+        padding: 10px;
+        border-radius: 10px;
+        border: 0;
+        background: radial-gradient(
+          circle,
+          rgba(63, 94, 251, 1) 0%,
+          rgba(252, 70, 107, 1) 100%
+        );
+        color: white;
+        font-weight: bold;
+      }
+
+      input {
+        border-radius: 10px;
+        padding: 10px;
+        background-color: rgb(32, 32, 114);
+        border: 0;
+        color: white;
+      }
+
+      input::placeholder {
+        font-weight: 500;
+
+        color: rgb(213, 213, 213);
+      }
+      #questions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      #questions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        color: white;
+        max-height: 100%;
+      }
+
+      .questionItem {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .questionTitle {
+        color: white;
+      }
+
+      .optionBtn {
+        padding: 10px;
+        background: linear-gradient(
+          90deg,
+          rgba(42, 123, 155, 1) 0%,
+          rgba(87, 199, 133, 1) 50%,
+          rgba(237, 221, 83, 1) 100%
+        );
+
+        border: 0;
+        border-radius: 10px;
+
+        color: white;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <input id="topic" placeholder="Введіть тему тесту" />
+      <input
+        id="questionsCount"
+        type="number"
+        placeholder="Введіть кількість питань"
+      />
+      <button id="startBtn" class="startBtn" onclick="startTest()">
+        Згенерувати
+      </button>
+
+      <div id="questions"></div>
+    </div>
+
+    <script>
+      let testQuestions = [];
+      let currentQuestionIndex = 0;
+      let userAnswers = [];
+
+      const users = [
+        { name: "fsdafas", age: 14, role: "fdsaf" },
+        { name: "user1", age: 15, role: "fdsaf" },
+        { name: "user3", age: 13, role: "fdsaf" },
+      ];
+
+      function startTest() {
+        let topic = document.getElementById("topic").value;
+        let questionsCount = document.getElementById("questionsCount").value;
+
+        generateTest(topic, questionsCount);
+      }
+
+      async function generateTest(topic, questionsCount) {
+        document.getElementById("startBtn").innerHTML = "Генерація...";
+
+        const response = await fetch("https://api.openai.com/v1/responses", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer API_KEY",
+          },
+          body: JSON.stringify({
+            model: "gpt-4.1-mini",
+            input: `
+                      Згенеруй тест на тему "${topic}" з ${questionsCount} питань.
+                      Формат:
+                      [
+                        {
+                          "question": "Питання...",
+                          "options": ["A", "B", "C", "D"],
+                          "correctIndex": 0
+                        }
+                      ]
+                  `,
+          }),
+        });
+        document.getElementById("startBtn").innerHTML = "Згенерувати";
+
+        const data = await response.json();
+
+        try {
+          const text = data.output[0].content[0].text;
+          console.log("Before", text);
+          testQuestions = JSON.parse(text);
+
+          console.log("After", testQuestions);
+
+          renderQuestion();
+        } catch {
+          document.getElementById("question").innerHTML =
+            "Помилка обробки відповіді ChatGPT";
+          return;
+        }
+      }
+
+      function escapeHTML(str) {
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function renderQuestion() {
+        const q = testQuestions[currentQuestionIndex];
+
+        document.getElementById("questions").innerHTML = `
+      <div class="questionItem">
+                <h2 class="questionTitle">${escapeHTML(q.question)}</h2>
+
+                ${q.options.map((flsl, index) => {
+                  return `<button onclick="chooseAnswer(${index})" class="optionBtn">${escapeHTML(
+                    flsl
+                  )}</button>`;
+                })}
+
+              </div>
+              `;
+      }
+
+      function chooseAnswer(answerIndex) {
+        userAnswers.push({
+          question: testQuestions[currentQuestionIndex].question,
+          isCorrect:
+            testQuestions[currentQuestionIndex].correctIndex === answerIndex,
+          choosenIndex: answerIndex,
+          correctIndex: testQuestions[currentQuestionIndex].correctIndex,
+        });
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < testQuestions.length) {
+          renderQuestion();
+        } else {
+          showResults();
+        }
+      }
+
+      function showResults() {
+        const correctCount = userAnswers.filter(
+          (answer) => answer.isCorrect === true
+        ).length;
+
+        const summary = userAnswers.map((answer, index) => {
+          return `
+            <p>
+                ${index + 1}  ${answer.question}<br>
+                Ваша відповідь: ${
+                  testQuestions[index].options[answer.choosenIndex]
+                }
+                Правильна відповідь: ${
+                  testQuestions[index].options[answer.correctIndex]
+                }
+
+                <span>${answer.isCorrect ? "Правильно" : "Помилка"}</span>
+
+                
+
+
+            </p>
+          `;
+        });
+
+        document.getElementById(
+          "questions"
+        ).innerHTML = `<h2>Правильних відповідей ${correctCount} з ${testQuestions.length} питань<h2/> <br> ${summary}`;
+      }
+    </script>
+  </body>
+</html>

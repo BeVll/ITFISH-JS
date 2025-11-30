@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <style>
+      /* #btn1 {
+        width: 100px;
+        padding: 15px;
+        background-color: rgb(7, 153, 206);
+        border: 0;
+        color: white;
+        cursor: pointer;
+      }
+
+      #btn1:hover {
+        opacity: 80%;
+      } */
+    </style>
+  </head>
+  <body>
+    <!-- <button id="btn1" onclick="onClickBtn1()">Кнопка</button>
+
+    <script>
+      let btn1 = document.getElementById("btn1");
+
+      const colors = ["red", "yellow", "black", "#928ddd", "#ff43a4"];
+
+      function onClickBtn1() {
+        let random = Math.floor(Math.random() * colors.length);
+
+        btn1.style.backgroundColor = colors[random];
+      } 
+    </script>-->
+
+    <h1 id="display">00:00:00</h1>
+
+    <button id="btnStart">Start</button>
+    <button id="btnStop">Stop</button>
+    <button id="btnReset">Reset</button>
+
+    <script>
+      let seconds = 0;
+      let minutes = 0;
+      let hours = 0;
+      let timer = null;
+      let isRunning = false;
+
+      let display = document.getElementById("display");
+
+      let btnStart = document.getElementById("btnStart");
+      let btnStop = document.getElementById("btnStop");
+      let btnReset = document.getElementById("btnReset");
+
+      btnStart.addEventListener("click", start);
+      btnStop.addEventListener("click", stop);
+      btnReset.addEventListener("click", reset);
+
+      function tick() {
+        seconds++;
+
+        if (seconds === 60) {
+          seconds = 0;
+          minutes++;
+        }
+        if (minutes === 60) {
+          minutes = 0;
+          hours++;
+        }
+
+        displayTime();
+      }
+
+      function displayTime() {
+        let secondsText = "";
+        let minutesText = "";
+        let hoursText = "";
+
+        if (seconds < 10) {
+          secondsText = "0" + seconds;
+        } else {
+          secondsText = seconds;
+        }
+
+        if (minutes < 10) {
+          minutesText = "0" + minutes;
+        } else {
+          minutesText = minutes;
+        }
+
+        if (hours < 10) {
+          hoursText = "0" + hours;
+        } else {
+          hoursText = hours;
+        }
+
+        display.innerText = `${hoursText}:${minutesText}:${secondsText}`;
+      }
+
+      function start() {
+        if (isRunning == false) {
+          timer = setInterval(tick, 100);
+          isRunning = true;
+        }
+      }
+
+      function stop() {
+        clearInterval(timer);
+        isRunning = false;
+      }
+
+      function reset() {
+        seconds = 0;
+        minutes = 0;
+        hours = 0;
+        displayTime();
+      }
+
+      //Допомога до завдання
+      let random = Math.floor(Math.random() * 10) + 1;
+      console.log(random);
+    </script>
+  </body>
+</html>

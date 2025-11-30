@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <style>
+      .listContainer {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 20px;
+        background-color: white;
+        border-radius: 20px;
+        min-width: 300px;
+        width: fit-content;
+        align-items: center;
+        box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .container {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .item {
+        width: 300px;
+        padding: 10px;
+        background-color: rgb(240, 240, 240);
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      html {
+        background-color: rgb(237, 237, 237);
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+      }
+
+      .actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 50% 25% 25%;
+        gap: 5px;
+      }
+
+      .newItemName {
+        margin: 0;
+        padding: 5px;
+        border-radius: 5px;
+        border: 2px solid rgb(200, 200, 200);
+      }
+
+      .actionBtn {
+        padding: 5px;
+        background-color: rgb(17, 110, 239);
+        color: white;
+        border: 2px solid rgb(17, 110, 239);
+      }
+
+      .items {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin: 0;
+        width: fit-content;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="listContainer">
+        <h1>My List</h1>
+        <div id="items" class="items"></div>
+        <div class="actions">
+          <input
+            id="newItemName"
+            class="newItemName"
+            type="text"
+            placeholder="New item"
+          />
+          <button onclick="addItem()" class="actionBtn">Add Item</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      let arr = ["Item 1", "Item 2", "Item 3"];
+      console.log(arr);
+
+      displayList();
+
+      function displayList() {
+        let items = document.getElementById("items");
+
+        items.innerHTML = "";
+
+        arr.forEach((item, index) => {
+          items.innerHTML += `<div class="item">${item}  <button onclick="deleteItem(${index})">Delete</button></div>`;
+        });
+      }
+
+      function addItem() {
+        let newItemName = document.getElementById("newItemName");
+
+        let value = newItemName.value;
+
+        //arr.push(value); // Додає елемент в кінець масиву
+        //arr.unshift(value); // Додає елемент на початок масиву
+        //arr.splice(1, 0, value); // Додає елемент за індексом 1
+
+        arr.push(value);
+
+        displayList();
+      }
+
+      function deleteItem(index) {
+        // arr.pop() // Видаляє останній елемент масиву
+        // arr.shift() // Видаляє перший елемент масиву
+        //arr.splice(2, 5); // Видаляє елемент за індексом (перший параметр - індекс з якого починаємо видаляти, другий параметр - кількість елементів для видалення)
+        //arr.splice(index, 1, "fdsa"); // Видаляє елемент за індексом(як у минулому випадку) і додає новий елемент на його місце
+
+        arr.splice(index, 1);
+        displayList();
+      }
+    </script>
+  </body>
+</html>

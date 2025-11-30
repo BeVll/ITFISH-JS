@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Грав в Відповіді</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body id="bodyBlock">
+    <div class="container">
+      <div id="header" class="header">
+        <h1>Грав в Відповіді</h1>
+      </div>
+
+      <div id="content" class="content">
+        <div class="content-item">
+          <h2 id="question-text">Що ти їв?</h2>
+          <div class="answers" id="answers-container"></div>
+        </div>
+      </div>
+
+      <div id="congratsText">
+        <h1>Ти пройшов тест!</h1>
+        <button onclick="resetTest()">Пройти ще раз</button>
+      </div>
+    </div>
+
+    <script>
+      let questions = [
+        {
+          question: "Що ти їв?",
+          answers: ["Кавун", "Банана", "Яблуко", "Апельсин"],
+          correctAnswer: 0,
+        },
+        {
+          question: "Який твій улюблений колір?",
+          answers: ["Червоний", "Синій", "Зелений", "Жовтий"],
+          correctAnswer: 1,
+        },
+        {
+          question: "Де ти живеш?",
+          answers: ["Київ", "Львів", "Одеса", "Харків"],
+          correctAnswer: 2,
+        },
+        {
+          question: "Що ти любиш робити?",
+          answers: ["Читати", "Грати", "Спати", "Готувати"],
+          correctAnswer: 3,
+        },
+      ];
+
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      }
+
+      let currentQuestionIndex = 0;
+
+      questions = shuffleArray(questions);
+
+      function displayQuestion(index) {
+        const question = questions[index];
+        const questionText = document.getElementById("question-text");
+        const answersContainer = document.getElementById("answers-container");
+
+        questionText.textContent = question.question;
+
+        answersContainer.innerHTML = "";
+
+        question.answers.forEach((answer, answerIndex) => {
+          const answerItem = document.createElement("div");
+          answerItem.className = "answer-item";
+          answerItem.id = `answer-item-${answerIndex + 1}`;
+          answerItem.onclick = () => selectAnswer(answerIndex);
+
+          const answerText = document.createElement("p");
+          answerText.textContent = answer;
+
+          const answerImage = document.createElement("img");
+          answerImage.src = "images/door.png";
+          answerImage.alt = "question";
+
+          answerItem.appendChild(answerText);
+          answerItem.appendChild(answerImage);
+          answersContainer.appendChild(answerItem);
+        });
+      }
+
+      function selectAnswer(index) {
+        if (index === questions[currentQuestionIndex].correctAnswer) {
+          console.log("Question length: ", questions.length);
+          console.log("Current question index: ", currentQuestionIndex);
+
+          document.getElementById("bodyBlock").style.backgroundImage =
+            "url(images/castle.avif)";
+
+          new Audio("sounds/correct-sound.mp3").play();
+
+          if (questions.length == currentQuestionIndex + 1) {
+            displayCongrats();
+          } else {
+            currentQuestionIndex++;
+            displayQuestion(currentQuestionIndex);
+          }
+        } else {
+          document.getElementById("bodyBlock").style.backgroundImage =
+            "url(images/hell.webp)";
+
+          let wrongSound = new Audio("sounds/wrong-sound.mp3");
+          wrongSound.volume = 1;
+          wrongSound.play();
+        }
+      }
+
+      function displayCongrats() {
+        document.getElementById("bodyBlock").style.backgroundImage =
+          "url(images/balloons.jpg)";
+
+        document.getElementById("header").style.display = "none";
+        document.getElementById("content").style.display = "none";
+        document.getElementById("congratsText").style.display = "flex";
+      }
+
+      function resetTest() {
+        document.getElementById("header").style.display = "block";
+        document.getElementById("content").style.display = "block";
+        document.getElementById("congratsText").style.display = "none";
+
+        document.getElementById("bodyBlock").style.backgroundImage =
+          "url(images/castle.avif)";
+
+        currentQuestionIndex = 0;
+      }
+
+      displayQuestion(currentQuestionIndex);
+    </script>
+  </body>
+</html>
