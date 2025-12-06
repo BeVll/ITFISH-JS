@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <style>
+      #map {
+        height: 400px;
+        margin-top: 30px;
+      }
+
+      #listLocations {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="addLocationForm">
+      <input name="name" placeholder="Назва точки" required />
+      <input name="latitude" placeholder="Широта" required />
+      <input name="longitude" placeholder="Довгота" required />
+      <button type="submit">Додати</button>
+
+      <div id="map"></div>
+
+      <div id="listLocations"></div>
+    </form>
+    <script>
+      let pointsMap;
+
+      var map = L.map("map").setView([50.450001, 30.523333], 10);
+
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution:
+          '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(map);
+
+      var layerGroup = L.layerGroup().addTo(map);
+
+      const stored = localStorage.getItem("locationsMap");
+      if (stored) {
+        pointsMap = new Map(JSON.parse(stored));
+        showPoints();
+        renderPoints();
+      } else {
+        pointsMap = new Map();
+      }
+
+      const form = document.getElementById("addLocationForm");
+
+      form.addEventListener("submit", formSubmit);
+
+      function formSubmit(event) {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
+        console.log(formData);
+
+        const data = {};
+
+        for (const [key, value] of formData.entries()) {
+          data[key] = value;
+        }
+
+        const locationObject = {
+          name: data["name"],
+          lat: data["latitude"],
+          long: data["longitude"],
+        };
+
+        pointsMap.set(new Date().toLocaleTimeString(), locationObject);
+
+        console.log(data);
+
+        showPoints();
+        renderPoints();
+
+        localStorage.setItem(
+          "locationsMap",
+          JSON.stringify(Array.from(pointsMap.entries()))
+        );
+      }
+
+      function renderPoints() {
+        layerGroup.clearLayers();
+
+        pointsMap.forEach((location) => {
+          var marker = L.marker([location.lat, location.long]).addTo(
+            layerGroup
+          );
+        });
+      }
+
+      function showPoints() {
+        document.getElementById("listLocations").innerHTML = "";
+
+        pointsMap.forEach((location) => {
+          document.getElementById(
+            "listLocations"
+          ).innerHTML += `<span>${location.name} [${location.lat}, ${location.long}]</span>`;
+        });
+      }
+
+      //   let map = new Map(); // Оголошення мепу ----------
+      //   map.set("key", 10); // Додавання елементу ----------
+      //   //map.set("years", 2025);
+      //   map.set("years", [2020, 2021, 2022, 2023, 2024, 2025]);
+      //   //map.set("years", "2024, 2025....");
+
+      //   //   console.log(map);
+
+      //   //   let years = map.get("years123"); // Отримання елементу з map  ----------
+      //   //   console.log("Years: ", years);
+
+      //   //   map.delete("key"); // Видалення елементу  ----------
+      //   //   console.log("Map after delete: ", map);
+
+      //   //   map.set("companies", ["Apple", "Samsung", "BMW"]);
+      //   //   console.log("Map with companies: ", map);
+
+      //   //   map.clear();
+      //   //   console.log("Map after clearing: ", map);
+
+      //   //console.log("Has: ", map.has("years")); // Has - перевірка чи існує елемент із відповідним ключом
+
+      //   //console.log("Keys", map.keys()); // Повертає усі ключі
+
+      //   //console.log("Values", map.values()); // Повертає усі значення
+
+      //   //console.log("Entries", map.entries()); // Повертає усі елементи
+    </script>
+  </body>
+</html>
