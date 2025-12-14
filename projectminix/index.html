@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <input value="fdasf" />
+    <h1 id="dateText" on>Date:</h1>
+    <img
+      style="width: 400px"
+      src="https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D"
+    />
+    <script>
+      //   var maksimBirthday = new Date("2010-10-30");
+
+      //   console.log(maksimBirthday);
+
+      //   var options = {
+      //     day: "numeric",
+      //     month: "long",
+      //     year: "numeric",
+      //   };
+
+      //   let formattedDate = maksimBirthday.toLocaleDateString("en-US", options);
+
+      //   document.getElementById("dateText").innerText = formattedDate;
+
+      //   var today = new Date();
+
+      //   setInterval(() => {
+      //     today.setSeconds(today.getSeconds() + 1);
+      //     document.getElementById(
+      //       "dateText"
+      //     ).innerText = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
+      //   }, 1000);
+
+      //   setInterval(() => {
+      //     const today2 = new Date();
+      //     document.getElementById(
+      //       "dateText"
+      //     ).innerText = `${today2.getHours()}:${today2.getMinutes()}:${today2.getSeconds()}`;
+      //   }, 1000);
+
+      //   console.log(today.toLocaleDateString("en-US")); // 9/17/2016
+      //   console.log(today.toLocaleDateString("en-US", options)); // Saturday, September 17, 2016
+      //   console.log(today.toLocaleDateString("hi-IN", options)); // शनिवार, 17 सितंबर 2016
+
+      //   const tickets = [
+      //     { seat: 5, row: 1, price: 500 },
+      //     { seat: 10, row: 8, price: 250 },
+      //     { seat: 3, row: 2, price: 450 },
+      //     { seat: 7, row: 4, price: 300 },
+      //     { seat: 12, row: 6, price: 400 },
+      //     { seat: 1, row: 3, price: 350 },
+      //     { seat: 9, row: 5, price: 275 },
+      //   ];
+
+      //   function sortTickets(a, b) {
+      //     return a.price - b.price;
+      //   }
+
+      //   console.log(tickets);
+      //   console.log(tickets.sort((a, b) => sortTickets(a, b)));
+
+      let text = "fjksalfj4saka5lsdkfsal123fkldasfjaskdjfl";
+
+      const pattern = /\d/g;
+
+      let result = text.match(pattern);
+
+      document.getElementById("dateText").innerHTML = result;
+    </script>
+  </body>
+</html>
