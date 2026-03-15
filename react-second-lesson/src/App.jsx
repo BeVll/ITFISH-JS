@@ -5,6 +5,7 @@ import ProgressBar from "./components/ProgressBar";
 
 function App() {
   const [count, setCount] = useState(0);
+
   const [state, setState] = useState(false);
 
   const [currentDate, setDate] = useState(new Date());
